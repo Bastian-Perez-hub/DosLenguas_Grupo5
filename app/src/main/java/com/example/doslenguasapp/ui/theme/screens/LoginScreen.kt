@@ -28,8 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.theme.components.AppTextField
 import com.example.doslenguasapp.viewmodel.LoginViewModel
 
@@ -104,5 +106,12 @@ fun LoginScreen(
                 Text("¿No tienes cuenta? Regístrate")
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenpreview(){
+    DosLenguasAppTheme {
+        LoginScreen()
     }
 }

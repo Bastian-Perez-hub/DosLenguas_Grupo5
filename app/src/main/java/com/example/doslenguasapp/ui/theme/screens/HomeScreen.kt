@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -53,16 +53,25 @@ fun HomeScreen() {
                     icon = { Icon(Icons.Default.Home, contentDescription = null) }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Mi Perfil") },
+                    label = { Text("Mis frases") },
                     selected = false,
-                    onClick = { /* Navegar a perfil */ },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                    onClick = { /* Semana 7: navegar a Mis frases */ },
+                    icon = { Icon(Icons.Default.Star, contentDescription = null) }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Configuración") },
+                    label = { Text("Mi perfil") },
                     selected = false,
-                    onClick = { /* Navegar a settings */ },
-                    icon = { Icon(Icons.Default.Settings, contentDescription = null) }
+                    onClick = { /* Semana 7: navegar a Perfil */ },
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                )
+                HorizontalDivider()
+                NavigationDrawerItem(
+                    label = { Text("Cerrar sesión") },
+                    selected = false,
+                    onClick = { /* Semana 7: volver al Login */ },
+                    icon = {
+                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                    }
                 )
             }
         }
