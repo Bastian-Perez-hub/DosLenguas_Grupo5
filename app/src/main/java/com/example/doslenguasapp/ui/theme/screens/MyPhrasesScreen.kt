@@ -35,7 +35,8 @@ fun MyPhrasesScreen(
     favorites: List<Pair<String, String>> = listOf(
         "Gracias" to "Teşekkürler",
         "¿Dónde estoy?" to "Neredeyim?"
-    )
+    ),
+    onMenuClick: () -> Unit = {}
 ) {
     // Estado solo visual: qué pestaña está seleccionada (0 = Aprendidas, 1 = Favoritas)
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -47,8 +48,7 @@ fun MyPhrasesScreen(
             TopAppBar(
                 title = { Text("Mis frases") },
                 navigationIcon = {
-                    // Semana 7: aquí se abre el menú lateral
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
                     }
                 }
@@ -154,5 +154,6 @@ fun MyPhrasesScreenPreview() {
 fun MyPhrasesScreenEmptyPreview() {
     DosLenguasAppTheme {
         MyPhrasesScreen(learned = emptyList(), favorites = emptyList())
+
     }
 }

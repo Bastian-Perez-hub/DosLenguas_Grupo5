@@ -31,7 +31,8 @@ fun ProfileScreen(
     name: String = "Bastián Pérez",
     email: String = "bastian@correo.com",
     learnedCount: Int = 3,
-    favoritesCount: Int = 2
+    favoritesCount: Int = 2,
+    onMenuClick: () -> Unit = {}
 ) {
     // Estado solo visual: si el cuadro "¿De dónde quieres la foto?" está abierto
     var showPhotoDialog by remember { mutableStateOf(false) }
@@ -41,8 +42,7 @@ fun ProfileScreen(
             TopAppBar(
                 title = { Text("Mi perfil") },
                 navigationIcon = {
-                    // Semana 7: aquí se abre el menú lateral
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
                     }
                 }

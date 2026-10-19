@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,11 +38,17 @@ import com.example.doslenguasapp.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    onGoToRegister: () -> Unit = {},   // la navegación real se conecta en la semana 7
+    onGoToRegister: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
     viewModel: LoginViewModel = viewModel()
 ) {
     // La pantalla solo observa el estado; no valida nada por su cuenta.
     val state by viewModel.state.collectAsState()
+
+    // Cuando el ViewModel marca el login como válido, avisamos hacia afuera.
+    LaunchedEffect(state.loginValido) {
+        if (state.loginValido) onLoginSuccess()
+    }
 
     Scaffold { padding ->
         Column(
@@ -108,9 +115,10 @@ fun LoginScreen(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenpreview(){
+fun LoginScreenpreview() {
     DosLenguasAppTheme {
         LoginScreen()
     }
