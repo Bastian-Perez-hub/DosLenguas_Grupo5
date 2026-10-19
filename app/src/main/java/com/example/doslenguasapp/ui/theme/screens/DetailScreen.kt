@@ -22,15 +22,15 @@ import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 fun DetailScreen(
     intro: String = "Una de las frases más importantes en cada idioma es saludar...",
     spanish: String = "Hola, ¿cómo estás?",
-    turkish: String = "Merhaba, nasılsın?"
+    turkish: String = "Merhaba, nasılsın?",
+    onBack: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Detalle de frase") },
                 navigationIcon = {
-                    // Semana 7: aquí se conecta el volver atrás
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }

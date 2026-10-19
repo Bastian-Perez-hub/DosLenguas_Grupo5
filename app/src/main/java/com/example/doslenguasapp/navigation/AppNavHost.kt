@@ -106,8 +106,7 @@ fun AppNavHost(
                 route = Routes.DETAIL,
                 arguments = listOf(navArgument("phraseId") { type = NavType.IntType })
             ) {
-                // El volver atrás se conecta en el paso 5.
-                DetailScreen()
+                DetailScreen(onBack = { navController.popBackStack() })
             }
         }
     }
