@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -48,6 +49,12 @@ fun AppDrawerContent(
             selected = currentRoute == Routes.MY_PHRASES,
             onClick = { onNavigate(Routes.MY_PHRASES) },
             icon = { Icon(Icons.Default.Star, contentDescription = null) }
+        )
+        NavigationDrawerItem(
+            label = { Text("Flashcards") },
+            selected = currentRoute == Routes.FLASHCARDS,
+            onClick = { onNavigate(Routes.FLASHCARDS) },
+            icon = { Icon(Icons.Default.Quiz, contentDescription = null) }
         )
         NavigationDrawerItem(
             label = { Text("Mi perfil") },

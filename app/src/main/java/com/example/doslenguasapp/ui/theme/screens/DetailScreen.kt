@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,22 +16,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 
-// Pantalla estática (Guía 8): solo diseño, sin navegación, ViewModel ni Room.
-// Los textos llegan como parámetros para que el molde sirva para cualquier frase.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     intro: String = "Una de las frases más importantes en cada idioma es saludar...",
     spanish: String = "Hola, ¿cómo estás?",
-    turkish: String = "Merhaba, nasılsın?"
+    turkish: String = "Merhaba, nasılsın?",
+    onBack: () -> Unit = {},
+    onSpeakTurkish: (String) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Detalle de frase") },
                 navigationIcon = {
-                    // Semana 7: aquí se conecta el volver atrás
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
@@ -46,7 +46,6 @@ fun DetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Espacio de la imagen: por ahora un emoji. La animación de saludo va en la semana 10.
             Text("👋", fontSize = 72.sp)
 
             Text(
@@ -71,18 +70,30 @@ fun DetailScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Row(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Turco", style = MaterialTheme.typography.labelLarge)
-                    Text("\"$turkish\"", style = MaterialTheme.typography.headlineMedium)
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Turco", style = MaterialTheme.typography.labelLarge)
+                        Text("\"$turkish\"", style = MaterialTheme.typography.headlineMedium)
+                    }
+                    IconButton(onClick = { onSpeakTurkish(turkish) }) {
+                        Icon(
+                            imageVector = Icons.Default.VolumeUp,
+                            contentDescription = "Escuchar pronunciación",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Semana 9-10: aquí se guarda en Room, vibra y aparece el mensaje animado
             Button(onClick = { }, modifier = Modifier.fillMaxWidth()) {
                 Text("¡Ya la aprendí!")
             }

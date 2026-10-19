@@ -6,15 +6,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.doslenguasapp.model.Phrase
 import com.example.doslenguasapp.ui.theme.components.PhraseCard
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,6 +34,10 @@ fun HomeScreen(
     )
     val phraseOfTheDay = phrases.first()
     val otherPhrases = phrases.drop(1)
+
+    // Estado para el menú lateral (Hamburguesa)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -102,8 +110,10 @@ fun HomeScreen(
                 otherPhrases.forEach { phrase ->
                     PhraseCard(
                         text = phrase.spanish,
-                        onClick = { onOpenPhrase(phrase.id) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(4.dp),
+                        onClick = { onOpenPhrase(phrase.id) }
                     )
                 }
             }
