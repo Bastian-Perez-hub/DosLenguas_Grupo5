@@ -118,7 +118,10 @@ fun RegisterScreen(
             )
 
             TextButton(onClick = onGoToLogin) {
-                Text("¿Ya tienes cuenta? Inicia sesión")
+                Text(
+                    text = "¿Tienes cuenta? Inicia sesión",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }

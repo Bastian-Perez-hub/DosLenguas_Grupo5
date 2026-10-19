@@ -105,7 +105,10 @@ fun LoginScreen(
             )
 
             TextButton(onClick = onGoToRegister) {
-                Text("¿No tienes cuenta? Regístrate")
+                Text(
+                    text = "¿No tienes cuenta? Regístrate",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }
