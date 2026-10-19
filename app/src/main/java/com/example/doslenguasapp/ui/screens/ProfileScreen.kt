@@ -1,4 +1,4 @@
-package com.example.doslenguasapp.ui.theme.screens
+package com.example.doslenguasapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
-import com.example.doslenguasapp.ui.theme.components.AppButton
+import com.example.doslenguasapp.ui.components.AppButton
 
 // Pantalla estática (Guía 8): sin cámara, permisos ni navegación todavía.
 // Semana 8: nombre y correo vendrán del registro. Semana 10: cámara/galería con permisos.

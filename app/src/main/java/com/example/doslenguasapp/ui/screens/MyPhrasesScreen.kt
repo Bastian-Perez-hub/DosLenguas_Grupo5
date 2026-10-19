@@ -1,4 +1,4 @@
-package com.example.doslenguasapp.ui.theme.screens
+package com.example.doslenguasapp.ui.screens
 
 
 
@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
-import com.example.doslenguasapp.ui.theme.components.AppButton
+import com.example.doslenguasapp.ui.components.AppButton
 
 // Pantalla estática (Guía 8): datos de ejemplo, sin Room ni navegación.
 // Semana 9: las listas pasarán a venir de la base de datos vía ViewModel.

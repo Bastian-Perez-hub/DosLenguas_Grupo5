@@ -1,4 +1,4 @@
-package com.example.doslenguasapp.ui.theme.screens
+package com.example.doslenguasapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
-import com.example.doslenguasapp.ui.theme.components.AppButton
+import com.example.doslenguasapp.ui.components.AppButton
 
 // Pantalla estática (Guía 8): solo diseño, sin navegación, ViewModel ni Room.
 // Los textos llegan como parámetros para que el molde sirva para cualquier frase.

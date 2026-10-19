@@ -1,4 +1,4 @@
-package com.example.doslenguasapp.ui.theme.components
+package com.example.doslenguasapp.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

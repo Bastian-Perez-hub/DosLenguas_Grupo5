@@ -13,14 +13,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.doslenguasapp.ui.theme.components.AppDrawerContent
-import com.example.doslenguasapp.ui.theme.screens.DetailScreen
-import com.example.doslenguasapp.ui.theme.screens.EditProfileScreen
-import com.example.doslenguasapp.ui.theme.screens.HomeScreen
-import com.example.doslenguasapp.ui.theme.screens.LoginScreen
-import com.example.doslenguasapp.ui.theme.screens.MyPhrasesScreen
-import com.example.doslenguasapp.ui.theme.screens.ProfileScreen
-import com.example.doslenguasapp.ui.theme.screens.RegisterScreen
+import com.example.doslenguasapp.ui.components.AppDrawerContent
+import com.example.doslenguasapp.ui.screens.DetailScreen
+import com.example.doslenguasapp.ui.screens.EditProfileScreen
+import com.example.doslenguasapp.ui.screens.HomeScreen
+import com.example.doslenguasapp.ui.screens.LoginScreen
+import com.example.doslenguasapp.ui.screens.MyPhrasesScreen
+import com.example.doslenguasapp.ui.screens.ProfileScreen
+import com.example.doslenguasapp.ui.screens.RegisterScreen
 import kotlinx.coroutines.launch
 
 @Composable
