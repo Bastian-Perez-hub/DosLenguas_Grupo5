@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 import com.example.doslenguasapp.ui.theme.components.AppTextField
 import com.example.doslenguasapp.viewmodel.RegisterViewModel
 
@@ -111,15 +112,10 @@ fun RegisterScreen(
                 imeAction = ImeAction.Done
             )
 
-            Button(
-                onClick = viewModel::onRegisterClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text("Crear cuenta", style = MaterialTheme.typography.labelLarge)
-            }
+            AppButton(
+                text = "Crear cuenta",
+                onClick = viewModel::onRegisterClick
+            )
 
             TextButton(onClick = onGoToLogin) {
                 Text("¿Ya tienes cuenta? Inicia sesión")

@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 import com.example.doslenguasapp.ui.theme.components.AppTextField
 import com.example.doslenguasapp.viewmodel.LoginViewModel
 
@@ -98,16 +99,10 @@ fun LoginScreen(
                 isPassword = true,
                 imeAction = ImeAction.Done
             )
-
-            Button(
-                onClick = viewModel::onLoginClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
-            }
+            AppButton(
+                text = "Iniciar sesión",
+                onClick = viewModel::onLoginClick
+            )
 
             TextButton(onClick = onGoToRegister) {
                 Text("¿No tienes cuenta? Regístrate")

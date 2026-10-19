@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.doslenguasapp.model.Phrase
 import com.example.doslenguasapp.ui.theme.components.PhraseCard
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,12 +89,10 @@ fun HomeScreen(
                         "\"${phraseOfTheDay.spanish}\"",
                         style = MaterialTheme.typography.headlineMedium
                     )
-                    Button(
-                        onClick = { onOpenPhrase(phraseOfTheDay.id) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Ver en turco")
-                    }
+                    AppButton(
+                        text = "Ver en turco",
+                        onClick = { onOpenPhrase(phraseOfTheDay.id) }
+                    )
                 }
             }
 

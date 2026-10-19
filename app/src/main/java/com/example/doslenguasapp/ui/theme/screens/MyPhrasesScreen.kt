@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 
 // Pantalla estática (Guía 8): datos de ejemplo, sin Room ni navegación.
 // Semana 9: las listas pasarán a venir de la base de datos vía ViewModel.
@@ -36,7 +37,8 @@ fun MyPhrasesScreen(
         "Gracias" to "Teşekkürler",
         "¿Dónde estoy?" to "Neredeyim?"
     ),
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onGoToHome: () -> Unit = {}
 ) {
     // Estado solo visual: qué pestaña está seleccionada (0 = Aprendidas, 1 = Favoritas)
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -98,9 +100,10 @@ fun MyPhrasesScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     // Semana 7: aquí se navega al Inicio
-                    Button(onClick = { }) {
-                        Text("Ir al inicio")
-                    }
+                    AppButton(
+                        text = "Ir al inicio",
+                        onClick = { onGoToHome }
+                    )
                 }
             } else {
                 Column(

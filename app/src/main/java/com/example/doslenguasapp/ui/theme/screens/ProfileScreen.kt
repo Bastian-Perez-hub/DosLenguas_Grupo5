@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 
 // Pantalla estática (Guía 8): sin cámara, permisos ni navegación todavía.
 // Semana 8: nombre y correo vendrán del registro. Semana 10: cámara/galería con permisos.
@@ -32,7 +33,8 @@ fun ProfileScreen(
     email: String = "bastian@correo.com",
     learnedCount: Int = 3,
     favoritesCount: Int = 2,
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     // Estado solo visual: si el cuadro "¿De dónde quieres la foto?" está abierto
     var showPhotoDialog by remember { mutableStateOf(false) }
@@ -74,9 +76,11 @@ fun ProfileScreen(
                 )
             }
 
-            OutlinedButton(onClick = { showPhotoDialog = true }) {
-                Text("Cambiar foto")
-            }
+            AppButton(
+                text = "Cambiar foto",
+                onClick = { showPhotoDialog = true },
+                outlined = true
+            )
 
             Text(name, style = MaterialTheme.typography.headlineMedium)
             Text(
@@ -86,11 +90,11 @@ fun ProfileScreen(
             )
 
             // Semana 8: abre la pantalla Editar datos
-            Button(onClick = { }) {
-                Icon(Icons.Default.Edit, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Editar datos")
-            }
+            AppButton(
+                text = "Editar datos",
+                onClick = { },
+                icon = Icons.Default.Edit
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -109,9 +113,11 @@ fun ProfileScreen(
             }
 
             // Semana 7: vuelve al Login
-            OutlinedButton(onClick = { }, modifier = Modifier.fillMaxWidth()) {
-                Text("Cerrar sesión")
-            }
+            AppButton(
+                text = "Cerrar sesión",
+                onClick = { onLogout() },
+                outlined = true
+            )
         }
     }
 

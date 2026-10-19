@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.theme.components.AppButton
 
 // Pantalla estática (Guía 8): solo diseño, sin navegación, ViewModel ni Room.
 // Los textos llegan como parámetros para que el molde sirva para cualquier frase.
@@ -83,9 +84,10 @@ fun DetailScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             // Semana 9-10: aquí se guarda en Room, vibra y aparece el mensaje animado
-            Button(onClick = { }, modifier = Modifier.fillMaxWidth()) {
-                Text("¡Ya la aprendí!")
-            }
+            AppButton(
+                text = "¡Ya la aprendí!",
+                onClick = { }
+            )
         }
     }
 }

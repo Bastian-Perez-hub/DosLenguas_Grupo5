@@ -95,11 +95,21 @@ fun AppNavHost(
             }
 
             composable(Routes.MY_PHRASES) {
-                MyPhrasesScreen(onMenuClick = openMenu)
+                MyPhrasesScreen(
+                    onMenuClick = openMenu,
+                    onGoToHome = { goToMainDestination(Routes.HOME) }
+                )
             }
 
             composable(Routes.PROFILE) {
-                ProfileScreen(onMenuClick = openMenu)
+                ProfileScreen(
+                    onMenuClick = openMenu,
+                    onLogout = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.HOME) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             composable(
