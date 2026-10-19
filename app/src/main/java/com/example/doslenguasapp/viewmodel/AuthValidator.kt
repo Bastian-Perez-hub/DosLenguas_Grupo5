@@ -19,4 +19,28 @@ object AuthValidator {
         valor.isBlank() -> "La contraseña es obligatoria"
         else -> null
     }
+    // ---- Reglas del registro ----
+
+    fun nombre(valor: String): String? = when {
+        valor.isBlank() -> "El nombre es obligatorio"
+        valor.trim().length < 2 -> "El nombre es muy corto"
+        // \p{L} acepta letras de cualquier idioma (tildes, ñ, ç, ş, ğ, ı...)
+        !valor.trim().all { it.isLetter() || it == ' ' } -> "El nombre solo puede tener letras"
+        else -> null
+    }
+
+    fun passwordRegistro(valor: String): String? = when {
+        valor.isBlank() -> "La contraseña es obligatoria"
+        valor.length < 8 -> "Debe tener al menos 8 caracteres"
+        valor.none { it.isLetter() } -> "Debe incluir al menos una letra"
+        valor.none { it.isDigit() } -> "Debe incluir al menos un número"
+        else -> null
+    }
+
+    // Recibe las dos contraseñas porque necesita compararlas.
+    fun confirmarPassword(password: String, confirmacion: String): String? = when {
+        confirmacion.isBlank() -> "Confirma tu contraseña"
+        password != confirmacion -> "Las contraseñas no coinciden"
+        else -> null
+    }
 }
