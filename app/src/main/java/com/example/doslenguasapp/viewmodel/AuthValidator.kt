@@ -43,4 +43,15 @@ object AuthValidator {
         password != confirmacion -> "Las contraseñas no coinciden"
         else -> null
     }
+
+    // ---- Reglas de Editar datos ----
+
+    // La contraseña nueva es opcional: vacía significa "no la cambio".
+    fun passwordNuevaOpcional(valor: String): String? =
+        if (valor.isEmpty()) null else passwordRegistro(valor)
+
+    // Si no hay contraseña nueva ni confirmación, no hay nada que comparar.
+    fun confirmarPasswordNueva(password: String, confirmacion: String): String? =
+        if (password.isEmpty() && confirmacion.isEmpty()) null
+        else confirmarPassword(password, confirmacion)
 }

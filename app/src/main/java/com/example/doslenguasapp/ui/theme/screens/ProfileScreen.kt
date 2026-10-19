@@ -34,7 +34,8 @@ fun ProfileScreen(
     learnedCount: Int = 3,
     favoritesCount: Int = 2,
     onMenuClick: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onEditProfile: () -> Unit = {}
 ) {
     // Estado solo visual: si el cuadro "¿De dónde quieres la foto?" está abierto
     var showPhotoDialog by remember { mutableStateOf(false) }
@@ -89,10 +90,9 @@ fun ProfileScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            // Semana 8: abre la pantalla Editar datos
             AppButton(
                 text = "Editar datos",
-                onClick = { },
+                onClick = onEditProfile,
                 icon = Icons.Default.Edit
             )
 

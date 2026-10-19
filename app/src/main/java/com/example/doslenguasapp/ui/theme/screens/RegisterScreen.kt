@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,12 +41,16 @@ import com.example.doslenguasapp.viewmodel.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
-    onGoToLogin: () -> Unit = {},   // la navegación real se conecta en la semana 7
+    onGoToLogin: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {},
     viewModel: RegisterViewModel = viewModel()
 ) {
-    // La pantalla solo observa el estado; no valida nada por su cuenta.
     val state by viewModel.state.collectAsState()
 
+    // Cuando el ViewModel marca el registro como válido, avisamos hacia afuera.
+    LaunchedEffect(state.registroValido) {
+        if (state.registroValido) onRegisterSuccess()
+    }
     Scaffold { padding ->
         Column(
             modifier = Modifier

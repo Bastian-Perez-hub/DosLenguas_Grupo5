@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.doslenguasapp.ui.theme.components.AppDrawerContent
 import com.example.doslenguasapp.ui.theme.screens.DetailScreen
+import com.example.doslenguasapp.ui.theme.screens.EditProfileScreen
 import com.example.doslenguasapp.ui.theme.screens.HomeScreen
 import com.example.doslenguasapp.ui.theme.screens.LoginScreen
 import com.example.doslenguasapp.ui.theme.screens.MyPhrasesScreen
@@ -82,7 +83,8 @@ fun AppNavHost(
 
             composable(Routes.REGISTER) {
                 RegisterScreen(
-                    onGoToLogin = { navController.popBackStack() }
+                    onGoToLogin = { navController.popBackStack() },
+                    onRegisterSuccess = { navController.popBackStack() }
                 )
             }
 
@@ -108,7 +110,15 @@ fun AppNavHost(
                         navController.navigate(Routes.LOGIN) {
                             popUpTo(Routes.HOME) { inclusive = true }
                         }
-                    }
+                    },
+                    onEditProfile = { navController.navigate(Routes.EDIT_PROFILE) }
+                )
+            }
+
+            composable(Routes.EDIT_PROFILE) {
+                EditProfileScreen(
+                    onBack = { navController.popBackStack() },
+                    onSaved = { navController.popBackStack() }
                 )
             }
 
@@ -118,6 +128,7 @@ fun AppNavHost(
             ) {
                 DetailScreen(onBack = { navController.popBackStack() })
             }
+
         }
     }
 }
