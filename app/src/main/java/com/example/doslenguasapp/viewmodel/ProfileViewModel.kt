@@ -2,6 +2,7 @@ package com.example.doslenguasapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.doslenguasapp.data.PhraseProgressRepository
 import com.example.doslenguasapp.data.UserRepository
 import com.example.doslenguasapp.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,11 +13,14 @@ import kotlinx.coroutines.launch
 
 data class ProfileUiState(
     val nombre: String = "",
-    val email: String = ""
+    val email: String = "",
+    val learnedCount: Int = 0,
+    val favoritesCount: Int = 0
 )
 
 class ProfileViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val progressRepository: PhraseProgressRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileUiState())
@@ -33,6 +37,18 @@ class ProfileViewModel(
                     if (user != null) {
                         _state.update { it.copy(nombre = user.nombre, email = user.email) }
                     }
+                }
+            }
+        }
+
+        // Contadores: se recalculan solos cada vez que cambia el progreso de las frases.
+        viewModelScope.launch {
+            progressRepository.observeAll().collect { progressList ->
+                _state.update {
+                    it.copy(
+                        learnedCount = progressList.count { p -> p.learned },
+                        favoritesCount = progressList.count { p -> p.favorite }
+                    )
                 }
             }
         }

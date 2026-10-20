@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 
 data class DetailUiState(
     val phrase: Phrase? = null,
-    val learned: Boolean = false
+    val learned: Boolean = false,
+    val favorite: Boolean = false
 )
 
 class DetailViewModel(
@@ -31,10 +32,16 @@ class DetailViewModel(
     val state: StateFlow<DetailUiState> = _state.asStateFlow()
 
     init {
-        // Observamos el progreso de ESTA frase en Room. Si todavía no hay fila, no está aprendida.
+        // Observamos el progreso de ESTA frase en Room.
+        // Si todavía no hay fila, no está aprendida ni es favorita.
         viewModelScope.launch {
             progressRepository.observe(phraseId).collect { progress ->
-                _state.update { it.copy(learned = progress?.learned == true) }
+                _state.update {
+                    it.copy(
+                        learned = progress?.learned == true,
+                        favorite = progress?.favorite == true
+                    )
+                }
             }
         }
     }
@@ -42,6 +49,13 @@ class DetailViewModel(
     fun onLearnedClick() {
         viewModelScope.launch {
             progressRepository.markLearned(phraseId)
+        }
+    }
+
+    // Marca o desmarca la frase como favorita (el repositorio invierte el valor actual).
+    fun onFavoriteClick() {
+        viewModelScope.launch {
+            progressRepository.toggleFavorite(phraseId)
         }
     }
 }

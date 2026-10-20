@@ -37,7 +37,10 @@ class AppViewModelFactory(private val context: Context) : ViewModelProvider.Fact
                 RegisterViewModel(UserRepository(database.userDao())) as T
 
             modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
-                ProfileViewModel(UserRepository(database.userDao())) as T
+                ProfileViewModel(
+                    UserRepository(database.userDao()),
+                    PhraseProgressRepository(database.phraseProgressDao())
+                ) as T
 
             modelClass.isAssignableFrom(EditProfileViewModel::class.java) ->
                 EditProfileViewModel(UserRepository(database.userDao())) as T

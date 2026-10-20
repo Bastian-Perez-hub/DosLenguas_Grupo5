@@ -6,6 +6,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +25,7 @@ import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.DetailViewModel
 
-// Semana 9: la frase llega por la ruta y "aprendida" se guarda en Room.
+// Semana 9: la frase llega por la ruta; "aprendida" y "favorita" se guardan en Room.
 // Semana 10: vibración y mensaje animado al marcarla.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +44,20 @@ fun DetailScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                // NUEVO: corazón para marcar o quitar la frase de favoritas
+                actions = {
+                    if (phrase != null) {
+                        IconButton(onClick = viewModel::onFavoriteClick) {
+                            Icon(
+                                imageVector = if (state.favorite) Icons.Default.Favorite
+                                else Icons.Default.FavoriteBorder,
+                                contentDescription = if (state.favorite) "Quitar de favoritas"
+                                else "Marcar como favorita",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             )

@@ -34,8 +34,6 @@ import com.example.doslenguasapp.viewmodel.ProfileViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    learnedCount: Int = 3,
-    favoritesCount: Int = 2,
     onMenuClick: () -> Unit = {},
     onLogout: () -> Unit = {},
     onEditProfile: () -> Unit = {},
@@ -108,12 +106,12 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 SummaryCard(
-                    number = learnedCount,
+                    number = state.learnedCount,
                     label = "Aprendidas",
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
-                    number = favoritesCount,
+                    number = state.favoritesCount,
                     label = "Favoritas",
                     modifier = Modifier.weight(1f)
                 )
