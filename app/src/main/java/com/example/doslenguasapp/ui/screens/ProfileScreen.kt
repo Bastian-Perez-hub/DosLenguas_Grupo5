@@ -1,5 +1,6 @@
 package com.example.doslenguasapp.ui.screens
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,12 +14,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +23,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.ProfileViewModel
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +41,38 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
     var showPhotoDialog by remember { mutableStateOf(false) }
+    
+    // URI temporal para guardar la foto capturada por la cámara
+    var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
 
     // Launcher para elegir imagen de la galería
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        viewModel.onPhotoPicked(uri)
+        if (uri != null) viewModel.onPhotoPicked(uri)
+    }
+
+    // Launcher para capturar foto con la cámara
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && tempCameraUri != null) {
+            viewModel.onPhotoPicked(tempCameraUri)
+        }
+    }
+
+    // Función auxiliar para crear la URI segura del archivo de imagen
+    fun createImageUri(): Uri {
+        val directory = File(context.filesDir, "fotos")
+        if (!directory.exists()) directory.mkdirs()
+        val file = File(directory, "perfil_${System.currentTimeMillis()}.jpg")
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
     }
 
     Scaffold(
@@ -73,7 +96,6 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Foto circular con Coil
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -147,7 +169,12 @@ fun ProfileScreen(
             title = { Text("¿De dónde quieres la foto?") },
             text = { Text("Puedes tomar una foto nueva o elegir una de tu galería.") },
             confirmButton = {
-                TextButton(onClick = { showPhotoDialog = false }) { Text("Cámara") }
+                TextButton(onClick = {
+                    showPhotoDialog = false
+                    val uri = createImageUri()
+                    tempCameraUri = uri
+                    cameraLauncher.launch(uri)
+                }) { Text("Cámara") }
             },
             dismissButton = {
                 TextButton(onClick = {
