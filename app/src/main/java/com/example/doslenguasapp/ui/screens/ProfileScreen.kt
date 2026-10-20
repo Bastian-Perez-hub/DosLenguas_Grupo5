@@ -1,4 +1,4 @@
-package com.example.doslenguasapp.ui.theme.screens
+package com.example.doslenguasapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,22 +19,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.components.AppButton
+import com.example.doslenguasapp.viewmodel.AppViewModelFactory
+import com.example.doslenguasapp.viewmodel.ProfileViewModel
 
-// Pantalla estática (Guía 8): sin cámara, permisos ni navegación todavía.
-// Semana 8: nombre y correo vendrán del registro. Semana 10: cámara/galería con permisos.
+// Semana 9: nombre y correo vienen de Room (usuario con sesión iniciada).
+// Semana 10: cámara/galería con permisos.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    name: String = "Bastián Pérez",
-    email: String = "bastian@correo.com",
-    learnedCount: Int = 3,
-    favoritesCount: Int = 2,
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onLogout: () -> Unit = {},
+    onEditProfile: () -> Unit = {},
+    viewModel: ProfileViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
+    // La pantalla solo observa el estado; los datos los entrega el ViewModel.
+    val state by viewModel.state.collectAsState()
+
     // Estado solo visual: si el cuadro "¿De dónde quieres la foto?" está abierto
     var showPhotoDialog by remember { mutableStateOf(false) }
 
@@ -74,44 +82,47 @@ fun ProfileScreen(
                 )
             }
 
-            OutlinedButton(onClick = { showPhotoDialog = true }) {
-                Text("Cambiar foto")
-            }
+            AppButton(
+                text = "Cambiar foto",
+                onClick = { showPhotoDialog = true },
+                outlined = true
+            )
 
-            Text(name, style = MaterialTheme.typography.headlineMedium)
+            Text(state.nombre, style = MaterialTheme.typography.headlineMedium)
             Text(
-                email,
+                state.email,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            // Semana 8: abre la pantalla Editar datos
-            Button(onClick = { }) {
-                Icon(Icons.Default.Edit, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Editar datos")
-            }
+            AppButton(
+                text = "Editar datos",
+                onClick = onEditProfile,
+                icon = Icons.Default.Edit
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 SummaryCard(
-                    number = learnedCount,
+                    number = state.learnedCount,
                     label = "Aprendidas",
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
-                    number = favoritesCount,
+                    number = state.favoritesCount,
                     label = "Favoritas",
                     modifier = Modifier.weight(1f)
                 )
             }
 
-            // Semana 7: vuelve al Login
-            OutlinedButton(onClick = { }, modifier = Modifier.fillMaxWidth()) {
-                Text("Cerrar sesión")
-            }
+            // Vuelve al Login (la sesión se limpia en AppNavHost)
+            AppButton(
+                text = "Cerrar sesión",
+                onClick = { onLogout() },
+                outlined = true
+            )
         }
     }
 

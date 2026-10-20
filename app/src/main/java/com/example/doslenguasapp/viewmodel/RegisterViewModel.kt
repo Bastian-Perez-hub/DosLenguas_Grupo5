@@ -1,10 +1,13 @@
 package com.example.doslenguasapp.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.doslenguasapp.data.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class RegisterUiState(
     val nombre: String = "",
@@ -18,7 +21,9 @@ data class RegisterUiState(
     val registroValido: Boolean = false
 )
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterUiState())
     val state: StateFlow<RegisterUiState> = _state.asStateFlow()
@@ -60,17 +65,38 @@ class RegisterViewModel : ViewModel() {
         val passwordError = AuthValidator.passwordRegistro(actual.password)
         val confirmError = AuthValidator.confirmarPassword(actual.password, actual.confirmPassword)
 
-        _state.update {
-            it.copy(
-                nombreError = nombreError,
-                emailError = emailError,
-                passwordError = passwordError,
-                confirmPasswordError = confirmError,
-                // Por ahora solo marcamos que el formulario es válido.
-                // En la semana 9 aquí se guardará el usuario en Room.
-                registroValido = nombreError == null && emailError == null &&
-                        passwordError == null && confirmError == null
-            )
+        // Primero se validan los campos. Si hay errores, se muestran y no se toca Room.
+        if (nombreError != null || emailError != null ||
+            passwordError != null || confirmError != null
+        ) {
+            _state.update {
+                it.copy(
+                    nombreError = nombreError,
+                    emailError = emailError,
+                    passwordError = passwordError,
+                    confirmPasswordError = confirmError
+                )
+            }
+            return
+        }
+
+        // Los campos son válidos: ahora se intenta guardar el usuario en Room.
+        viewModelScope.launch {
+            val creado = userRepository.register(actual.nombre, actual.email, actual.password)
+            if (creado) {
+                _state.update {
+                    it.copy(
+                        nombreError = null,
+                        emailError = null,
+                        passwordError = null,
+                        confirmPasswordError = null,
+                        registroValido = true
+                    )
+                }
+            } else {
+                // El repositorio devuelve false cuando ese correo ya tiene cuenta.
+                _state.update { it.copy(emailError = "Ya existe una cuenta con este correo") }
+            }
         }
     }
 }

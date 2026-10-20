@@ -1,10 +1,9 @@
-package com.example.doslenguasapp.ui.theme.screens
+package com.example.doslenguasapp.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext // NUEVO
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -33,14 +32,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
-import com.example.doslenguasapp.ui.theme.components.AppTextField
+import com.example.doslenguasapp.ui.components.AppButton
+import com.example.doslenguasapp.ui.components.AppTextField
+import com.example.doslenguasapp.viewmodel.AppViewModelFactory // NUEVO
 import com.example.doslenguasapp.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
     onGoToRegister: () -> Unit = {},
     onLoginSuccess: () -> Unit = {},
-    viewModel: LoginViewModel = viewModel()
+    // CAMBIÓ: ahora el ViewModel se pide usando la fábrica
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
     // La pantalla solo observa el estado; no valida nada por su cuenta.
     val state by viewModel.state.collectAsState()
@@ -98,19 +100,16 @@ fun LoginScreen(
                 isPassword = true,
                 imeAction = ImeAction.Done
             )
-
-            Button(
-                onClick = viewModel::onLoginClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
-            }
+            AppButton(
+                text = "Iniciar sesión",
+                onClick = viewModel::onLoginClick
+            )
 
             TextButton(onClick = onGoToRegister) {
-                Text("¿No tienes cuenta? Regístrate")
+                Text(
+                    text = "¿No tienes cuenta? Regístrate",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }

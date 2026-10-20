@@ -1,43 +1,46 @@
-package com.example.doslenguasapp.ui.theme.screens
-
-
+package com.example.doslenguasapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.ui.components.AppButton
+import com.example.doslenguasapp.viewmodel.AppViewModelFactory
+import com.example.doslenguasapp.viewmodel.MyPhrasesViewModel
 
-// Pantalla estática (Guía 8): datos de ejemplo, sin Room ni navegación.
-// Semana 9: las listas pasarán a venir de la base de datos vía ViewModel.
+// Semana 9: las listas vienen de Room a través del ViewModel.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPhrasesScreen(
-    learned: List<Pair<String, String>> = listOf(
-        "Hola, ¿cómo estás?" to "Merhaba, nasılsın?",
-        "¿Dónde estoy?" to "Neredeyim?",
-        "Gracias" to "Teşekkürler"
-    ),
-    favorites: List<Pair<String, String>> = listOf(
-        "Gracias" to "Teşekkürler",
-        "¿Dónde estoy?" to "Neredeyim?"
-    ),
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onGoToHome: () -> Unit = {},
+    onOpenPhrase: (Int) -> Unit = {},
+    viewModel: MyPhrasesViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
+    // La pantalla solo observa el estado; las listas las entrega el ViewModel.
+    val state by viewModel.state.collectAsState()
+    val learned = state.learned
+    val favorites = state.favorites
+
     // Estado solo visual: qué pestaña está seleccionada (0 = Aprendidas, 1 = Favoritas)
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("Aprendidas", "Favoritas")
@@ -92,15 +95,20 @@ fun MyPhrasesScreen(
                     Text("📖", fontSize = 64.sp)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Aún no has aprendido frases. ¡Empecemos por la de hoy!",
+                        text = if (selectedTab == 0) {
+                            "Aún no has aprendido frases. ¡Empecemos por la de hoy!"
+                        } else {
+                            "Aún no tienes frases favoritas."
+                        },
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    // Semana 7: aquí se navega al Inicio
-                    Button(onClick = { }) {
-                        Text("Ir al inicio")
-                    }
+                    // CORREGIDO: antes era { onGoToHome }, que no ejecutaba la función
+                    AppButton(
+                        text = "Ir al inicio",
+                        onClick = onGoToHome
+                    )
                 }
             } else {
                 Column(
@@ -110,8 +118,12 @@ fun MyPhrasesScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    currentList.forEach { (spanish, turkish) ->
-                        Card(modifier = Modifier.fillMaxWidth()) {
+                    currentList.forEach { phrase ->
+                        // NUEVO: la tarjeta es clicable y abre el Detalle de esa frase
+                        Card(
+                            onClick = { onOpenPhrase(phrase.id) },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             Row(
                                 modifier = Modifier.padding(16.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -120,16 +132,17 @@ fun MyPhrasesScreen(
                                     modifier = Modifier.weight(1f),
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    Text(spanish, style = MaterialTheme.typography.titleMedium)
+                                    Text(phrase.spanish, style = MaterialTheme.typography.titleMedium)
                                     Text(
-                                        turkish,
+                                        phrase.turkish,
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 }
                                 Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = "Aprendida",
+                                    imageVector = if (selectedTab == 0) Icons.Default.Check
+                                    else Icons.Default.Favorite,
+                                    contentDescription = if (selectedTab == 0) "Aprendida" else "Favorita",
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
@@ -146,14 +159,5 @@ fun MyPhrasesScreen(
 fun MyPhrasesScreenPreview() {
     DosLenguasAppTheme {
         MyPhrasesScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MyPhrasesScreenEmptyPreview() {
-    DosLenguasAppTheme {
-        MyPhrasesScreen(learned = emptyList(), favorites = emptyList())
-
     }
 }
