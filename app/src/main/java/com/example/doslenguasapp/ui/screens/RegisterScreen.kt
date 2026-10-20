@@ -15,13 +15,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,10 +47,6 @@ fun RegisterScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // Cuando el ViewModel marca el registro como válido, avisamos hacia afuera.
-    LaunchedEffect(state.registroValido) {
-        if (state.registroValido) onRegisterSuccess()
-    }
     Scaffold { padding ->
         Column(
             modifier = Modifier
@@ -129,6 +125,22 @@ fun RegisterScreen(
                 )
             }
         }
+    }
+
+    // Cuando el ViewModel marca el registro como válido, mostramos el aviso.
+    // Al presionar "Aceptar" (o cerrar el diálogo) se vuelve al Login.
+    if (state.registroValido) {
+        AlertDialog(
+            onDismissRequest = onRegisterSuccess,
+            title = { Text("¡Cuenta creada!") },
+            text = { Text("Tu cuenta se creó con éxito. Ahora puedes iniciar sesión.") },
+            confirmButton = {
+                AppButton(
+                    text = "Aceptar",
+                    onClick = onRegisterSuccess
+                )
+            }
+        )
     }
 }
 
