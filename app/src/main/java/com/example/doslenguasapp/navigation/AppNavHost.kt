@@ -14,36 +14,28 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.doslenguasapp.ui.components.AppDrawerContent
-import com.example.doslenguasapp.ui.screens.DetailScreen
-import com.example.doslenguasapp.ui.screens.EditProfileScreen
-import com.example.doslenguasapp.ui.screens.HomeScreen
-import com.example.doslenguasapp.ui.screens.LoginScreen
-import com.example.doslenguasapp.ui.screens.MyPhrasesScreen
-import com.example.doslenguasapp.ui.screens.ProfileScreen
-import com.example.doslenguasapp.ui.screens.RegisterScreen
+import com.example.doslenguasapp.ui.screens.*
 import kotlinx.coroutines.launch
 import com.example.doslenguasapp.utils.SessionManager
-import com.example.doslenguasapp.model.PhraseCatalog
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    onSpeak: (String) -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Ruta en la que estamos ahora; sirve para marcar la opción activa del menú.
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    // El menú solo se puede abrir (también deslizando) en estas pantallas.
-    val drawerRoutes = listOf(Routes.HOME, Routes.MY_PHRASES, Routes.PROFILE)
+    val drawerRoutes = listOf(Routes.HOME, Routes.MY_PHRASES, Routes.PROFILE, Routes.FLASHCARDS)
 
-    // Ir a una pantalla del menú sin apilar pantallas repetidas.
     fun goToMainDestination(route: String) {
         navController.navigate(route) {
-            popUpTo(Routes.HOME)
+            popUpTo(Routes.HOME) { saveState = true }
             launchSingleTop = true
+            restoreState = true
         }
     }
 
@@ -63,7 +55,7 @@ fun AppNavHost(
                     SessionManager.logout()
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.HOME) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
                     }
                 }
             )
@@ -107,13 +99,20 @@ fun AppNavHost(
                 )
             }
 
+            composable(Routes.FLASHCARDS) {
+                FlashcardsScreen(
+                    onMenuClick = openMenu,
+                    onSpeak = onSpeak
+                )
+            }
+
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     onMenuClick = openMenu,
                     onLogout = {
                         SessionManager.logout()
                         navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.HOME) { inclusive = true }
+                            popUpTo(0) { inclusive = true }
                         }
                     },
                     onEditProfile = { navController.navigate(Routes.EDIT_PROFILE) }
@@ -131,12 +130,11 @@ fun AppNavHost(
                 route = Routes.DETAIL,
                 arguments = listOf(navArgument("phraseId") { type = NavType.IntType })
             ) {
-                DetailScreen(onBack = { navController.popBackStack() })
+                DetailScreen(
+                    onBack = { navController.popBackStack() },
+                    onSpeakTurkish = onSpeak
+                )
             }
-
-
-
-
         }
     }
 }
