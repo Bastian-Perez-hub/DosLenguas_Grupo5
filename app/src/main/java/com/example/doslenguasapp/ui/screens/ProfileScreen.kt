@@ -1,5 +1,8 @@
 package com.example.doslenguasapp.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,18 +22,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.ProfileViewModel
 
-// Semana 9: nombre y correo vienen de Room (usuario con sesión iniciada).
-// Semana 10: cámara/galería con permisos.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -39,11 +42,15 @@ fun ProfileScreen(
     onEditProfile: () -> Unit = {},
     viewModel: ProfileViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
-    // La pantalla solo observa el estado; los datos los entrega el ViewModel.
     val state by viewModel.state.collectAsState()
-
-    // Estado solo visual: si el cuadro "¿De dónde quieres la foto?" está abierto
     var showPhotoDialog by remember { mutableStateOf(false) }
+
+    // Launcher para elegir imagen de la galería
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        viewModel.onPhotoPicked(uri)
+    }
 
     Scaffold(
         topBar = {
@@ -66,7 +73,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Foto circular: mientras no haya foto, se muestra un ícono de persona
+            // Foto circular con Coil
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -74,12 +81,21 @@ fun ProfileScreen(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "Foto de perfil",
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (state.photoUri != null) {
+                    AsyncImage(
+                        model = state.photoUri,
+                        contentDescription = "Foto de perfil",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = "Sin foto de perfil",
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
             AppButton(
@@ -117,7 +133,6 @@ fun ProfileScreen(
                 )
             }
 
-            // Vuelve al Login (la sesión se limpia en AppNavHost)
             AppButton(
                 text = "Cerrar sesión",
                 onClick = { onLogout() },
@@ -132,18 +147,20 @@ fun ProfileScreen(
             title = { Text("¿De dónde quieres la foto?") },
             text = { Text("Puedes tomar una foto nueva o elegir una de tu galería.") },
             confirmButton = {
-                // Semana 10: abre la cámara (con permiso)
                 TextButton(onClick = { showPhotoDialog = false }) { Text("Cámara") }
             },
             dismissButton = {
-                // Semana 10: abre la galería
-                TextButton(onClick = { showPhotoDialog = false }) { Text("Galería") }
+                TextButton(onClick = {
+                    showPhotoDialog = false
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }) { Text("Galería") }
             }
         )
     }
 }
 
-// Tarjeta pequeña de resumen. En la semana 7 se puede mover a la carpeta components.
 @Composable
 private fun SummaryCard(number: Int, label: String, modifier: Modifier = Modifier) {
     Card(modifier = modifier) {

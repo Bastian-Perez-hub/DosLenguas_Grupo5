@@ -1,5 +1,6 @@
 package com.example.doslenguasapp.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doslenguasapp.data.PhraseProgressRepository
@@ -15,7 +16,8 @@ data class ProfileUiState(
     val nombre: String = "",
     val email: String = "",
     val learnedCount: Int = 0,
-    val favoritesCount: Int = 0
+    val favoritesCount: Int = 0,
+    val photoUri: Uri? = null // Nueva línea: guarda la URI de la foto elegida
 )
 
 class ProfileViewModel(
@@ -52,5 +54,10 @@ class ProfileViewModel(
                 }
             }
         }
+    }
+
+    // Nueva función: actualiza el estado con la foto elegida
+    fun onPhotoPicked(uri: Uri?) {
+        _state.update { it.copy(photoUri = uri) }
     }
 }
