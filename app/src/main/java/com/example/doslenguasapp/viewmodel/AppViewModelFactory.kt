@@ -21,6 +21,9 @@ class AppViewModelFactory(private val context: Context) : ViewModelProvider.Fact
             modelClass.isAssignableFrom(RegisterViewModel::class.java) ->
                 RegisterViewModel(UserRepository(database.userDao())) as T
 
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) ->
+                ProfileViewModel(UserRepository(database.userDao())) as T
+
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
     }

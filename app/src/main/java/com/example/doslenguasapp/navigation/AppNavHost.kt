@@ -22,6 +22,7 @@ import com.example.doslenguasapp.ui.screens.MyPhrasesScreen
 import com.example.doslenguasapp.ui.screens.ProfileScreen
 import com.example.doslenguasapp.ui.screens.RegisterScreen
 import kotlinx.coroutines.launch
+import com.example.doslenguasapp.utils.SessionManager
 
 @Composable
 fun AppNavHost(
@@ -58,6 +59,7 @@ fun AppNavHost(
                     goToMainDestination(route)
                 },
                 onLogout = {
+                    SessionManager.logout()
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.LOGIN) {
                         popUpTo(Routes.HOME) { inclusive = true }
@@ -107,6 +109,7 @@ fun AppNavHost(
                 ProfileScreen(
                     onMenuClick = openMenu,
                     onLogout = {
+                        SessionManager.logout()
                         navController.navigate(Routes.LOGIN) {
                             popUpTo(Routes.HOME) { inclusive = true }
                         }
