@@ -23,6 +23,7 @@ import com.example.doslenguasapp.ui.screens.ProfileScreen
 import com.example.doslenguasapp.ui.screens.RegisterScreen
 import kotlinx.coroutines.launch
 import com.example.doslenguasapp.utils.SessionManager
+import com.example.doslenguasapp.model.PhraseCatalog
 
 @Composable
 fun AppNavHost(
@@ -101,7 +102,8 @@ fun AppNavHost(
             composable(Routes.MY_PHRASES) {
                 MyPhrasesScreen(
                     onMenuClick = openMenu,
-                    onGoToHome = { goToMainDestination(Routes.HOME) }
+                    onGoToHome = { goToMainDestination(Routes.HOME) },
+                    onOpenPhrase = { id -> navController.navigate(Routes.detail(id)) }
                 )
             }
 
@@ -131,6 +133,9 @@ fun AppNavHost(
             ) {
                 DetailScreen(onBack = { navController.popBackStack() })
             }
+
+
+
 
         }
     }

@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.doslenguasapp.model.Phrase
+import com.example.doslenguasapp.model.PhraseCatalog
 import com.example.doslenguasapp.ui.components.PhraseCard
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
@@ -24,11 +24,7 @@ fun HomeScreen(
     onGoToMyPhrases: () -> Unit = {},
     onOpenPhrase: (Int) -> Unit = {}
 ) {
-    val phrases = listOf(
-        Phrase(1, "¿Dónde estoy?", "Neredeyim?"),
-        Phrase(2, "Hola, ¿cómo estás?", "Merhaba, nasılsın?"),
-        Phrase(3, "Gracias", "Teşekkürler")
-    )
+    val phrases = PhraseCatalog.phrases
     val phraseOfTheDay = phrases.first()
     val otherPhrases = phrases.drop(1)
 
