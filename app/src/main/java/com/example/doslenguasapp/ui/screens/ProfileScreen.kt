@@ -44,17 +44,14 @@ fun ProfileScreen(
     val context = LocalContext.current
     var showPhotoDialog by remember { mutableStateOf(false) }
     
-    // URI temporal para guardar la foto capturada por la cámara
     var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Launcher para elegir imagen de la galería
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) viewModel.onPhotoPicked(uri)
     }
 
-    // Launcher para capturar foto con la cámara
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
@@ -63,16 +60,15 @@ fun ProfileScreen(
         }
     }
 
-    // Función auxiliar para crear la URI segura del archivo de imagen
-    fun createImageUri(): Uri {
-        val directory = File(context.filesDir, "fotos")
-        if (!directory.exists()) directory.mkdirs()
-        val file = File(directory, "perfil_${System.currentTimeMillis()}.jpg")
-        return FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            file
-        )
+    // Launcher para pedir permiso de cámara en tiempo real
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            val uri = createImageUri(context)
+            tempCameraUri = uri
+            cameraLauncher.launch(uri)
+        }
     }
 
     Scaffold(
@@ -171,9 +167,8 @@ fun ProfileScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showPhotoDialog = false
-                    val uri = createImageUri()
-                    tempCameraUri = uri
-                    cameraLauncher.launch(uri)
+                    // Pedimos el permiso. Si ya lo tiene, el launcher dispara el éxito directo.
+                    permissionLauncher.launch(android.Manifest.permission.CAMERA)
                 }) { Text("Cámara") }
             },
             dismissButton = {
@@ -186,6 +181,17 @@ fun ProfileScreen(
             }
         )
     }
+}
+
+private fun createImageUri(context: android.content.Context): Uri {
+    val directory = File(context.filesDir, "fotos")
+    if (!directory.exists()) directory.mkdirs()
+    val file = File(directory, "perfil_${System.currentTimeMillis()}.jpg")
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.fileprovider",
+        file
+    )
 }
 
 @Composable
