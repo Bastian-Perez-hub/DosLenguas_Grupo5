@@ -48,6 +48,12 @@ class AppViewModelFactory(private val context: Context) : ViewModelProvider.Fact
             modelClass.isAssignableFrom(MyPhrasesViewModel::class.java) ->
                 MyPhrasesViewModel(PhraseProgressRepository(database.phraseProgressDao())) as T
 
+            modelClass.isAssignableFrom(HomeViewModel::class.java) ->
+                HomeViewModel(
+                    UserRepository(database.userDao()),
+                    PhraseProgressRepository(database.phraseProgressDao())
+                ) as T
+
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
     }
