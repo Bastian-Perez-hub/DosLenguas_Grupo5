@@ -63,7 +63,7 @@ fun AppNavHost(
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.LOGIN
+            startDestination = if (SessionManager.isLoggedIn()) Routes.HOME else Routes.LOGIN
         ) {
             composable(Routes.LOGIN) {
                 LoginScreen(

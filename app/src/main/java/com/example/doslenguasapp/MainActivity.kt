@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.doslenguasapp.navigation.AppNavHost
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import com.example.doslenguasapp.utils.SessionManager
 import com.example.doslenguasapp.utils.TextToSpeechManager
 
 class MainActivity : ComponentActivity() {
@@ -12,6 +13,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        SessionManager.init(this)
         
         // Inicializamos el gestor de audio
         ttsManager = TextToSpeechManager(this)
