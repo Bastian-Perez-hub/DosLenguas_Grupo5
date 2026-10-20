@@ -5,9 +5,11 @@
     <!-- NUEVO: permiso para usar la cámara -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- NUEVO: la app no se bloquea en equipos sin cámara -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
 
     <application
         android:allowBackup="true"

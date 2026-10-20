@@ -25,6 +25,7 @@ import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.DetailViewModel
+import com.example.doslenguasapp.utils.VibrationHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +36,7 @@ fun DetailScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val phrase = state.phrase
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -47,7 +49,12 @@ fun DetailScreen(
                 },
                 actions = {
                     if (phrase != null) {
-                        IconButton(onClick = viewModel::onFavoriteClick) {
+                        IconButton(onClick = {
+                            viewModel.onFavoriteClick()
+                            if (!state.favorite) {
+                                VibrationHelper.vibrateSuccess(context)
+                            }
+                        }) {
                             Icon(
                                 imageVector = if (state.favorite) Icons.Default.Favorite
                                 else Icons.Default.FavoriteBorder,
@@ -117,7 +124,10 @@ fun DetailScreen(
 
                 AppButton(
                     text = if (state.learned) "¡Ya la aprendiste!" else "¡Ya la aprendí!",
-                    onClick = viewModel::onLearnedClick,
+                    onClick = {
+                        viewModel.onLearnedClick()
+                        VibrationHelper.vibrateSuccess(context)
+                    },
                     enabled = !state.learned,
                     icon = if (state.learned) Icons.Default.Check else null
                 )
