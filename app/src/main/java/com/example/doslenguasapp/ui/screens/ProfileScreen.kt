@@ -43,7 +43,7 @@ fun ProfileScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var showPhotoDialog by remember { mutableStateOf(false) }
-    
+    var showPermissionDenied by remember { mutableStateOf(false) }
     var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -68,6 +68,8 @@ fun ProfileScreen(
             val uri = createImageUri(context)
             tempCameraUri = uri
             cameraLauncher.launch(uri)
+        } else {
+            showPermissionDenied = true
         }
     }
 
@@ -178,6 +180,26 @@ fun ProfileScreen(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }) { Text("Galería") }
+            }
+
+        )
+    }
+    if (showPermissionDenied) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDenied = false },
+            title = { Text("Permiso de cámara denegado") },
+            text = {
+                Text(
+                    "Sin el permiso no podemos abrir la cámara. " +
+                            "Puedes activarlo en Ajustes > Aplicaciones, " +
+                            "o elegir una foto de tu galería."
+                )
+            },
+            confirmButton = {
+                AppButton(
+                    text = "Entendido",
+                    onClick = { showPermissionDenied = false }
+                )
             }
         )
     }
