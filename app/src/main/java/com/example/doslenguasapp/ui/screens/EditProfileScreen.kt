@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext // NUEVO
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.ui.components.AppTextField
+import com.example.doslenguasapp.viewmodel.AppViewModelFactory // NUEVO
 import com.example.doslenguasapp.viewmodel.EditProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +31,8 @@ import com.example.doslenguasapp.viewmodel.EditProfileViewModel
 fun EditProfileScreen(
     onBack: () -> Unit = {},
     onSaved: () -> Unit = {},
-    viewModel: EditProfileViewModel = viewModel()
+    // CAMBIÓ: ahora el ViewModel se pide usando la fábrica
+    viewModel: EditProfileViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
     // La pantalla solo observa el estado; no valida nada por su cuenta.
     val state by viewModel.state.collectAsState()

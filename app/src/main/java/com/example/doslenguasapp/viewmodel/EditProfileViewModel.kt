@@ -1,16 +1,19 @@
 package com.example.doslenguasapp.viewmodel
 
-
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.doslenguasapp.data.UserRepository
+import com.example.doslenguasapp.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class EditProfileUiState(
-    // Valores iniciales de ejemplo. En la semana 9 vendrán de la base de datos.
-    val nombre: String = "Bastián Pérez",
-    val email: String = "bastian@correo.com",
+    val nombre: String = "",
+    val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
     val nombreError: String? = null,
@@ -20,10 +23,29 @@ data class EditProfileUiState(
     val guardadoValido: Boolean = false
 )
 
-class EditProfileViewModel : ViewModel() {
+class EditProfileViewModel(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(EditProfileUiState())
     val state: StateFlow<EditProfileUiState> = _state.asStateFlow()
+
+    // Quién inició sesión (lo guardó el Login en SessionManager).
+    private val userId: Int? = SessionManager.currentUserId.value
+
+    init {
+        // Se cargan los datos actuales UNA sola vez, para llenar el formulario.
+        // Usamos first() y no collect() para que, mientras escribes,
+        // Room no te pise lo que estás editando.
+        if (userId != null) {
+            viewModelScope.launch {
+                val user = userRepository.observeUser(userId).first()
+                if (user != null) {
+                    _state.update { it.copy(nombre = user.nombre, email = user.email) }
+                }
+            }
+        }
+    }
 
     fun onNombreChange(valor: String) {
         _state.update { it.copy(nombre = valor, nombreError = AuthValidator.nombre(valor)) }
@@ -61,16 +83,46 @@ class EditProfileViewModel : ViewModel() {
         val passwordError = AuthValidator.passwordNuevaOpcional(actual.password)
         val confirmError = AuthValidator.confirmarPasswordNueva(actual.password, actual.confirmPassword)
 
-        _state.update {
-            it.copy(
-                nombreError = nombreError,
-                emailError = emailError,
-                passwordError = passwordError,
-                confirmPasswordError = confirmError,
-                // Por ahora solo marcamos que es válido. En la semana 9 se guarda en Room.
-                guardadoValido = nombreError == null && emailError == null &&
-                        passwordError == null && confirmError == null
+        // Primero se validan los campos. Si hay errores, se muestran y no se toca Room.
+        if (nombreError != null || emailError != null ||
+            passwordError != null || confirmError != null
+        ) {
+            _state.update {
+                it.copy(
+                    nombreError = nombreError,
+                    emailError = emailError,
+                    passwordError = passwordError,
+                    confirmPasswordError = confirmError
+                )
+            }
+            return
+        }
+
+        // Sin usuario con sesión no hay nada que guardar.
+        if (userId == null) return
+
+        // Los campos son válidos: ahora se guardan los cambios en Room.
+        viewModelScope.launch {
+            val guardado = userRepository.updateProfile(
+                id = userId,
+                nombre = actual.nombre,
+                email = actual.email,
+                newPassword = actual.password
             )
+            if (guardado) {
+                _state.update {
+                    it.copy(
+                        nombreError = null,
+                        emailError = null,
+                        passwordError = null,
+                        confirmPasswordError = null,
+                        guardadoValido = true
+                    )
+                }
+            } else {
+                // El repositorio devuelve false si el correo nuevo ya lo usa otra cuenta.
+                _state.update { it.copy(emailError = "Ese correo ya lo usa otra cuenta") }
+            }
         }
     }
 }
