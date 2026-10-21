@@ -31,7 +31,7 @@ Identidad visual propia: logo de DosLenguas como ícono de la app y en las panta
 Recursos nativos
 Recurso	Dónde se usa	Permiso
 Cámara y galería	Foto de perfil	`CAMERA` (se pide en tiempo de ejecución)
-Vibración	Detalle de frase	`VIBRATE`
+Vibración	Detalle de Frase	`VIBRATE`
 Text-to-Speech	Audio en turco	Ninguno
 Estructura del proyecto
 ```
