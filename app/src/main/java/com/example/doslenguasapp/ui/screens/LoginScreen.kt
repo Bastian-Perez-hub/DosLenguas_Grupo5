@@ -36,6 +36,9 @@ import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.ui.components.AppTextField
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory // NUEVO
 import com.example.doslenguasapp.viewmodel.LoginViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.doslenguasapp.R
 
 @Composable
 fun LoginScreen(
@@ -62,16 +65,11 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Reemplazar por: Image(painterResource(R.drawable.tu_icono), contentDescription = "Logo")
-            Surface(
-                modifier = Modifier.size(104.dp),
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("Tu icono", style = MaterialTheme.typography.bodyMedium)
-                }
-            }
+            Image(
+                painter = painterResource(id = R.drawable.logo_doslenguas),
+                contentDescription = "Logo de DosLenguas",
+                modifier = Modifier.size(160.dp)
+            )
 
             Text("¡Merhaba!", style = MaterialTheme.typography.headlineLarge)
             Text(
