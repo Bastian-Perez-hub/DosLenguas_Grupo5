@@ -29,7 +29,13 @@ fun AppNavHost(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val drawerRoutes = listOf(Routes.HOME, Routes.MY_PHRASES, Routes.PROFILE, Routes.FLASHCARDS)
+    val drawerRoutes = listOf(
+        Routes.HOME,
+        Routes.MY_PHRASES,
+        Routes.PROFILE,
+        Routes.FLASHCARDS,
+        Routes.CONNECTION
+    )
 
     fun goToMainDestination(route: String) {
         navController.navigate(route) {
@@ -103,6 +109,12 @@ fun AppNavHost(
                 FlashcardsScreen(
                     onMenuClick = openMenu,
                     onSpeak = onSpeak
+                )
+            }
+
+            composable(Routes.CONNECTION) {
+                ConnectionScreen(
+                    onMenuClick = openMenu
                 )
             }
 

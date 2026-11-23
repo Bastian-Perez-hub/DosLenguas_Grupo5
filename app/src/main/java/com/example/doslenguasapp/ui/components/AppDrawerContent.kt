@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Quiz
@@ -55,6 +56,12 @@ fun AppDrawerContent(
             selected = currentRoute == Routes.FLASHCARDS,
             onClick = { onNavigate(Routes.FLASHCARDS) },
             icon = { Icon(Icons.Default.Quiz, contentDescription = null) }
+        )
+        NavigationDrawerItem(
+            label = { Text("Conexión") },
+            selected = currentRoute == Routes.CONNECTION,
+            onClick = { onNavigate(Routes.CONNECTION) },
+            icon = { Icon(Icons.Default.Cloud, contentDescription = null) }
         )
         NavigationDrawerItem(
             label = { Text("Mi perfil") },

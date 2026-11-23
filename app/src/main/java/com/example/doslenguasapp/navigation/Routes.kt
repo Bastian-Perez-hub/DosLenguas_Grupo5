@@ -12,6 +12,7 @@ object Routes {
     const val PROFILE = "profile"
     const val EDIT_PROFILE = "edit_profile"
     const val FLASHCARDS = "flashcards"
+    const val CONNECTION = "connection"
 
     // El detalle necesita saber QUÉ frase mostrar, así que lleva un argumento.
     const val DETAIL = "detail/{phraseId}"

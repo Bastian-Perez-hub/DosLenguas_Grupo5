@@ -22,6 +22,7 @@ Proyecto de la **Evaluación Parcial 2** de la asignatura Desarrollo de Aplicaci
 - Arquitectura MVVM
 - Navigation Compose
 - Room (base de datos local)
+- Retrofit + Gson (consulta a una API REST)
 - Coil (carga de imágenes)
 - Text-to-Speech de Android (audio en turco)
 
@@ -33,6 +34,7 @@ Proyecto de la **Evaluación Parcial 2** de la asignatura Desarrollo de Aplicaci
 - **Detalle de frase:** texto en español y turco, audio de pronunciación, botón "¡Ya la aprendí!" y marcado como favorita (corazón).
 - **Mis frases:** lista de frases aprendidas y favoritas, guardadas en Room.
 - **Flashcards:** tarjetas de memoria con animación de giro; muestran el español por un lado y el turco (con audio) por el otro.
+- **Conexión:** pantalla con un botón "Consultar API" que pide un dato a JSONPlaceholder (`GET /todos/1`) y lo muestra en una tarjeta. Es un ejemplo de consumo de API con Retrofit.
 - **Perfil:** datos del usuario, contadores de frases aprendidas y favoritas, y foto de perfil tomada con la cámara o elegida desde la galería. Se solicita el permiso de cámara y se muestra un aviso si se deniega.
 - **Editar datos:** cambio de nombre, correo y contraseña (opcional) con validaciones.
 - **Menú lateral** y navegación entre todas las pantallas (Inicio, Mis frases, Flashcards, Mi perfil y Cerrar sesión).
@@ -52,6 +54,7 @@ Proyecto de la **Evaluación Parcial 2** de la asignatura Desarrollo de Aplicaci
 ```
 app/src/main/java/com/example/doslenguasapp/
 ├── data/        Room: entidades, DAOs, base de datos y repositorios
+│   └── remote/  Cliente Retrofit, DTO y repositorio de la API
 ├── model/       Modelo de frase y catálogo de frases
 ├── navigation/  Rutas y NavHost
 ├── ui/

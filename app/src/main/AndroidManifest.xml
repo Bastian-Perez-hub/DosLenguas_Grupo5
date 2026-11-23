@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso para consultar la API -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- NUEVO: permiso para usar la cámara -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- NUEVO: la app no se bloquea en equipos sin cámara -->

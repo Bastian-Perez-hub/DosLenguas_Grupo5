@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.doslenguasapp.data.AppDatabase
 import com.example.doslenguasapp.data.PhraseProgressRepository
 import com.example.doslenguasapp.data.UserRepository
+import com.example.doslenguasapp.data.remote.TodoRepository
 
 // Le enseña a Android cómo construir los ViewModels que necesitan repositorios.
 class AppViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
@@ -53,6 +54,9 @@ class AppViewModelFactory(private val context: Context) : ViewModelProvider.Fact
                     UserRepository(database.userDao()),
                     PhraseProgressRepository(database.phraseProgressDao())
                 ) as T
+
+            modelClass.isAssignableFrom(ConnectionViewModel::class.java) ->
+                ConnectionViewModel(TodoRepository()) as T
 
             else -> throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
         }
