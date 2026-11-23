@@ -65,6 +65,21 @@ app/src/main/java/com/example/doslenguasapp/
 └── viewmodel/   ViewModels y validaciones (AuthValidator)
 ```
 
+## Tests unitarios
+
+Se ejecutan en la PC (sin emulador) con **Kotest + MockK**:
+
+- `DetailSpect.kt`: comprueba que los botones "¡Ya la aprendí!" y el corazón del detalle envían el recado al repositorio (`coVerify`).
+- `ConnectionSpect.kt`: comprueba que "Consultar API" llama a la API simulada y muestra el dato, y que un fallo muestra el mensaje de error.
+
+Para ejecutarlos:
+
+```
+.\gradlew.bat testDebugUnitTest
+```
+
+El reporte queda en `app/build/reports/tests/testDebugUnitTest/index.html`.
+
 ## Cómo ejecutar
 
 1. Clonar el repositorio:
