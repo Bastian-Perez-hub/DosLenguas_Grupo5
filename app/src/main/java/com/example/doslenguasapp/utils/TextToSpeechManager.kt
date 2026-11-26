@@ -6,7 +6,8 @@ import android.util.Log
 import java.util.Locale
 
 /**
- * Gestor de Texto a Voz (TTS) para centralizar la pronunciación en turco.
+ * Gestor de Texto a Voz (TTS). Pronuncia el idioma de destino elegido
+ * (turco en Español → Turco, español en Turco → Español).
  */
 class TextToSpeechManager(context: Context, private val onReady: (Boolean) -> Unit = {}) : TextToSpeech.OnInitListener {
 
@@ -20,17 +21,9 @@ class TextToSpeechManager(context: Context, private val onReady: (Boolean) -> Un
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            // Intentamos configurar el idioma Turco
-            val result = tts?.setLanguage(Locale("tr", "TR"))
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "El idioma Turco no está disponible o no está descargado.")
-                isInitialized = false
-                onReady(false)
-            } else {
-                isInitialized = true
-                onReady(true)
-            }
+            // El idioma se elige en cada speak(), según la dirección de aprendizaje.
+            isInitialized = true
+            onReady(true)
         } else {
             Log.e("TTS", "Fallo total en la inicialización del motor TTS.")
             isInitialized = false
@@ -39,10 +32,14 @@ class TextToSpeechManager(context: Context, private val onReady: (Boolean) -> Un
     }
 
     /**
-     * Lee el texto en voz alta.
+     * Lee el texto en voz alta con la voz del idioma indicado.
      */
-    fun speak(text: String) {
+    fun speak(text: String, locale: Locale = Locale.forLanguageTag("tr-TR")) {
         if (isInitialized) {
+            val result = tts?.setLanguage(locale)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.w("TTS", "La voz para ${locale.language} no está disponible en este dispositivo.")
+            }
             // QUEUE_FLUSH detiene cualquier audio previo antes de empezar el nuevo
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         } else {

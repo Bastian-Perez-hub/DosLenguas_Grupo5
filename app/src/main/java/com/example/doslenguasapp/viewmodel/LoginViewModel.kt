@@ -3,6 +3,7 @@ package com.example.doslenguasapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doslenguasapp.data.UserRepository
+import com.example.doslenguasapp.model.LearningDirection
 import com.example.doslenguasapp.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +54,10 @@ class LoginViewModel(
                     it.copy(emailError = null, passwordError = "Correo o contraseña incorrectos")
                 }
             } else {
-                SessionManager.login(user.id)
+                SessionManager.login(
+                    userId = user.id,
+                    direction = LearningDirection.fromStored(user.direction)
+                )
                 _state.update { it.copy(emailError = null, passwordError = null, loginValido = true) }
             }
         }

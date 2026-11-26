@@ -1,16 +1,23 @@
 package com.example.doslenguasapp.data
 
+import com.example.doslenguasapp.model.LearningDirection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
 class UserRepository(private val userDao: UserDao) {
 
     // true si la cuenta se creó; false si ya existía ese correo.
-    suspend fun register(nombre: String, email: String, password: String): Boolean {
+    suspend fun register(
+        nombre: String,
+        email: String,
+        password: String,
+        direction: LearningDirection = LearningDirection.ES_TO_TR
+    ): Boolean {
         val user = UserEntity(
             nombre = nombre.trim(),
             email = email.trim().lowercase(),
-            password = password
+            password = password,
+            direction = direction.name
         )
         return userDao.insert(user) != -1L
     }
@@ -25,7 +32,14 @@ class UserRepository(private val userDao: UserDao) {
 
     // false si el correo nuevo ya lo usa otra cuenta.
     // Si newPassword viene vacía, se conserva la contraseña actual.
-    suspend fun updateProfile(id: Int, nombre: String, email: String, newPassword: String): Boolean {
+    // Si direction es null, se conserva la dirección actual.
+    suspend fun updateProfile(
+        id: Int,
+        nombre: String,
+        email: String,
+        newPassword: String,
+        direction: LearningDirection? = null
+    ): Boolean {
         val current = userDao.observeById(id).first() ?: return false
         val emailNormalizado = email.trim().lowercase()
         val otro = userDao.getByEmail(emailNormalizado)
@@ -35,7 +49,8 @@ class UserRepository(private val userDao: UserDao) {
             current.copy(
                 nombre = nombre.trim(),
                 email = emailNormalizado,
-                password = if (newPassword.isEmpty()) current.password else newPassword
+                password = if (newPassword.isEmpty()) current.password else newPassword,
+                direction = direction?.name ?: current.direction
             )
         )
         return true

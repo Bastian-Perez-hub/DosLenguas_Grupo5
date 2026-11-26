@@ -16,6 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.doslenguasapp.model.view
+import com.example.doslenguasapp.ui.LocalLearningDirection
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.ui.components.PhraseCard
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
@@ -32,6 +34,8 @@ fun HomeScreen(
 ) {
     // La pantalla solo observa el estado; nombre, frases y progreso los entrega el ViewModel.
     val state by viewModel.state.collectAsState()
+    val direction = LocalLearningDirection.current
+    val fraseDelDia = state.phraseOfTheDay.view(direction)
 
     val saludo = if (state.nombre.isBlank()) "¡Hola! 👋" else "¡Hola, ${state.nombre}! 👋"
     val progreso = if (state.totalCount == 0) 0f
@@ -94,11 +98,11 @@ fun HomeScreen(
                 ) {
                     Text("FRASE DEL DÍA", style = MaterialTheme.typography.labelLarge)
                     Text(
-                        "\"${state.phraseOfTheDay.spanish}\"",
+                        "\"${fraseDelDia.source}\"",
                         style = MaterialTheme.typography.headlineMedium
                     )
                     AppButton(
-                        text = "Ver en turco",
+                        text = "Ver en ${fraseDelDia.targetLabel.lowercase()}",
                         onClick = { onOpenPhrase(state.phraseOfTheDay.id) }
                     )
                 }
@@ -108,7 +112,7 @@ fun HomeScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 state.otherPhrases.forEach { phrase ->
                     PhraseCard(
-                        text = phrase.spanish,
+                        text = phrase.view(direction).source,
                         onClick = { onOpenPhrase(phrase.id) },
                         modifier = Modifier.weight(1f)
                     )

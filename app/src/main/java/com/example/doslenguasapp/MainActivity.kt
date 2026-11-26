@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DosLenguasAppTheme {
                 // Pasamos la función de voz al NavHost
-                AppNavHost(onSpeak = { text -> ttsManager?.speak(text) })
+                AppNavHost(onSpeak = { text, locale -> ttsManager?.speak(text, locale) })
             }
         }
     }

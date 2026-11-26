@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.ui.components.AppTextField
+import com.example.doslenguasapp.ui.components.DirectionCheckbox
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory // NUEVO
 import com.example.doslenguasapp.viewmodel.EditProfileViewModel
 
@@ -101,6 +102,11 @@ fun EditProfileScreen(
                 error = state.confirmPasswordError,
                 isPassword = true,
                 imeAction = ImeAction.Done
+            )
+
+            DirectionCheckbox(
+                checked = state.turcoAEspanol,
+                onCheckedChange = viewModel::onDirectionChange
             )
 
             AppButton(

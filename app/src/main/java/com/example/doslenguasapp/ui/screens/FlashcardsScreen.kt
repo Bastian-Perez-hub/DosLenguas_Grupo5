@@ -16,24 +16,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.doslenguasapp.model.Phrase
+import com.example.doslenguasapp.model.PhraseCatalog
+import com.example.doslenguasapp.model.view
+import com.example.doslenguasapp.ui.LocalLearningDirection
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardsScreen(
     onMenuClick: () -> Unit = {},
-    onSpeak: (String) -> Unit = {}
+    onSpeak: (String, Locale) -> Unit = { _, _ -> }
 ) {
-    val phrases = remember {
-        listOf(
-            Phrase(1, "¿Dónde estoy?", "Neredeyim?"),
-            Phrase(2, "Hola, ¿cómo estás?", "Merhaba, nasılsın?"),
-            Phrase(3, "Gracias", "Teşekkürler"),
-            Phrase(4, "Por favor", "Lütfen"),
-            Phrase(5, "Adiós", "Hoşça kal")
-        ).shuffled()
-    }
+    // Se usa el mismo catálogo que el resto de la app (antes había una copia aquí).
+    val phrases = remember { PhraseCatalog.phrases.shuffled() }
+    val direction = LocalLearningDirection.current
 
     var currentIndex by remember { mutableIntStateOf(0) }
     var rotated by remember { mutableStateOf(false) }
@@ -87,7 +84,7 @@ fun FlashcardsScreen(
                 ) {
                     if (rotation <= 90f) {
                         Text(
-                            text = phrases[currentIndex].spanish,
+                            text = phrases[currentIndex].view(direction).source,
                             style = MaterialTheme.typography.headlineMedium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(16.dp)
@@ -100,13 +97,16 @@ fun FlashcardsScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = phrases[currentIndex].turkish,
+                                text = phrases[currentIndex].view(direction).target,
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            IconButton(onClick = { onSpeak(phrases[currentIndex].turkish) }) {
+                            IconButton(onClick = {
+                                val vista = phrases[currentIndex].view(direction)
+                                onSpeak(vista.target, vista.targetLocale)
+                            }) {
                                 Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = "Oír", modifier = Modifier.size(48.dp))
                             }
                         }

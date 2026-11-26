@@ -21,21 +21,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.doslenguasapp.model.view
+import com.example.doslenguasapp.ui.LocalLearningDirection
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.DetailViewModel
 import com.example.doslenguasapp.utils.VibrationHelper
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     onBack: () -> Unit = {},
-    onSpeakTurkish: (String) -> Unit = {}, // Recuperamos el audio
+    onSpeak: (String, Locale) -> Unit = { _, _ -> }, // Audio en el idioma de destino
     viewModel: DetailViewModel = viewModel(factory = AppViewModelFactory(LocalContext.current))
 ) {
     val state by viewModel.state.collectAsState()
     val phrase = state.phrase
+    val direction = LocalLearningDirection.current
     val context = LocalContext.current
 
     Scaffold(
@@ -72,6 +76,7 @@ fun DetailScreen(
                 CircularProgressIndicator()
             }
         } else {
+            val vista = phrase.view(direction)
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -91,8 +96,8 @@ fun DetailScreen(
 
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        Text("Español", style = MaterialTheme.typography.labelLarge)
-                        Text("\"${phrase.spanish}\"", style = MaterialTheme.typography.headlineSmall)
+                        Text(vista.sourceLabel, style = MaterialTheme.typography.labelLarge)
+                        Text("\"${vista.source}\"", style = MaterialTheme.typography.headlineSmall)
                     }
                 }
 
@@ -106,10 +111,10 @@ fun DetailScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Turco", style = MaterialTheme.typography.labelLarge)
-                            Text("\"${phrase.turkish}\"", style = MaterialTheme.typography.headlineMedium)
+                            Text(vista.targetLabel, style = MaterialTheme.typography.labelLarge)
+                            Text("\"${vista.target}\"", style = MaterialTheme.typography.headlineMedium)
                         }
-                        IconButton(onClick = { onSpeakTurkish(phrase.turkish) }) {
+                        IconButton(onClick = { onSpeak(vista.target, vista.targetLocale) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.VolumeUp,
                                 contentDescription = "Oír",

@@ -3,6 +3,7 @@ package com.example.doslenguasapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doslenguasapp.data.UserRepository
+import com.example.doslenguasapp.model.LearningDirection
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,8 @@ data class RegisterUiState(
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
+    // false = Español → Turco; true = Turco → Español (casilla del registro).
+    val turcoAEspanol: Boolean = false,
     val nombreError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
@@ -58,6 +61,10 @@ class RegisterViewModel(
         }
     }
 
+    fun onDirectionChange(valor: Boolean) {
+        _state.update { it.copy(turcoAEspanol = valor) }
+    }
+
     fun onRegisterClick() {
         val actual = _state.value
         val nombreError = AuthValidator.nombre(actual.nombre)
@@ -82,7 +89,9 @@ class RegisterViewModel(
 
         // Los campos son válidos: ahora se intenta guardar el usuario en Room.
         viewModelScope.launch {
-            val creado = userRepository.register(actual.nombre, actual.email, actual.password)
+            val direccion = if (actual.turcoAEspanol) LearningDirection.TR_TO_ES
+            else LearningDirection.ES_TO_TR
+            val creado = userRepository.register(actual.nombre, actual.email, actual.password, direccion)
             if (creado) {
                 _state.update {
                     it.copy(

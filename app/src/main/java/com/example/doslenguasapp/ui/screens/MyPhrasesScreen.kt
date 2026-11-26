@@ -22,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.doslenguasapp.model.view
+import com.example.doslenguasapp.ui.LocalLearningDirection
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
@@ -38,6 +40,7 @@ fun MyPhrasesScreen(
 ) {
     // La pantalla solo observa el estado; las listas las entrega el ViewModel.
     val state by viewModel.state.collectAsState()
+    val direction = LocalLearningDirection.current
     val learned = state.learned
     val favorites = state.favorites
 
@@ -119,6 +122,7 @@ fun MyPhrasesScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     currentList.forEach { phrase ->
+                        val vista = phrase.view(direction)
                         // NUEVO: la tarjeta es clicable y abre el Detalle de esa frase
                         Card(
                             onClick = { onOpenPhrase(phrase.id) },
@@ -132,9 +136,9 @@ fun MyPhrasesScreen(
                                     modifier = Modifier.weight(1f),
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    Text(phrase.spanish, style = MaterialTheme.typography.titleMedium)
+                                    Text(vista.source, style = MaterialTheme.typography.titleMedium)
                                     Text(
-                                        phrase.turkish,
+                                        vista.target,
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.primary
                                     )

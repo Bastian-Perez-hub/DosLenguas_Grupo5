@@ -3,6 +3,7 @@ package com.example.doslenguasapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.doslenguasapp.data.UserRepository
+import com.example.doslenguasapp.model.LearningDirection
 import com.example.doslenguasapp.utils.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,8 @@ data class EditProfileUiState(
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
+    // false = Español → Turco; true = Turco → Español.
+    val turcoAEspanol: Boolean = false,
     val nombreError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
@@ -41,7 +44,14 @@ class EditProfileViewModel(
             viewModelScope.launch {
                 val user = userRepository.observeUser(userId).first()
                 if (user != null) {
-                    _state.update { it.copy(nombre = user.nombre, email = user.email) }
+                    _state.update {
+                        it.copy(
+                            nombre = user.nombre,
+                            email = user.email,
+                            turcoAEspanol = LearningDirection.fromStored(user.direction) ==
+                                    LearningDirection.TR_TO_ES
+                        )
+                    }
                 }
             }
         }
@@ -76,6 +86,10 @@ class EditProfileViewModel(
         }
     }
 
+    fun onDirectionChange(valor: Boolean) {
+        _state.update { it.copy(turcoAEspanol = valor) }
+    }
+
     fun onGuardarClick() {
         val actual = _state.value
         val nombreError = AuthValidator.nombre(actual.nombre)
@@ -103,13 +117,18 @@ class EditProfileViewModel(
 
         // Los campos son válidos: ahora se guardan los cambios en Room.
         viewModelScope.launch {
+            val direccion = if (actual.turcoAEspanol) LearningDirection.TR_TO_ES
+            else LearningDirection.ES_TO_TR
             val guardado = userRepository.updateProfile(
                 id = userId,
                 nombre = actual.nombre,
                 email = actual.email,
-                newPassword = actual.password
+                newPassword = actual.password,
+                direction = direccion
             )
             if (guardado) {
+                // La dirección se aplica ya mismo al resto de la app.
+                SessionManager.setDirection(direccion)
                 _state.update {
                     it.copy(
                         nombreError = null,

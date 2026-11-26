@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
+import com.example.doslenguasapp.ui.LocalLearningDirection
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.ProfileViewModel
 import java.io.File
@@ -129,6 +130,12 @@ fun ProfileScreen(
                 state.email,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Text(
+                text = "Modo de aprendizaje: ${LocalLearningDirection.current.label}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
             )
 
             AppButton(

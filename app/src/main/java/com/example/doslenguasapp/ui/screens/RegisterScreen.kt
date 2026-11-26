@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.doslenguasapp.ui.theme.DosLenguasAppTheme
 import com.example.doslenguasapp.ui.components.AppButton
 import com.example.doslenguasapp.ui.components.AppTextField
+import com.example.doslenguasapp.ui.components.DirectionCheckbox
 import com.example.doslenguasapp.viewmodel.AppViewModelFactory
 import com.example.doslenguasapp.viewmodel.RegisterViewModel
 import androidx.compose.foundation.Image
@@ -110,6 +111,11 @@ fun RegisterScreen(
                 error = state.confirmPasswordError,
                 isPassword = true,
                 imeAction = ImeAction.Done
+            )
+
+            DirectionCheckbox(
+                checked = state.turcoAEspanol,
+                onCheckedChange = viewModel::onDirectionChange
             )
 
             AppButton(
